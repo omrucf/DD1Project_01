@@ -187,40 +187,30 @@ vector<vector<minterms>> NthStage(vector<vector<minterms>> prevStage, vector<min
                     tempMinterm.posOf_.insert(int(XORBin.find('1')));
                     tempMinterm.isPrime = true;
                     temp.push_back(tempMinterm);
-
                 }
             }
-            if (temp.size() != 0)
-            {
-                stageIp1.push_back(temp);
-                temp.clear();
-            }
+        }
+        if (temp.size() != 0)
+        {
+            stageIp1.push_back(temp);
+            temp.clear();
         }
     }
-    for (int i = 0; i < stageIp1.size(); i++)
+    for (int i = 0; i < prevStage.size(); i++)
     {
-        for (int j = 0; j < stageIp1[i].size(); j++)
+        for (int j = 0; j < prevStage[i].size(); j++)
         {
-            if (stageIp1[i][j].isPrime)
-            {
-                PI.push_back(stageIp1[i][j]);
-            }
-        }
-    }
-
-    if (stageIp1.size() != 0)
-    {
-        result = NthStage(stageIp1, PI);
-    }
-    else
-    {
-        for (int i = 0; i < prevStage.size(); i++)
-        {
-            for (int j = 0; j < prevStage[i].size(); j++)
+            if (prevStage[i][j].isPrime)
             {
                 PI.push_back(prevStage[i][j]);
             }
         }
+    }
+
+
+    if (stageIp1.size() != 0)
+    {
+        result = NthStage(stageIp1, PI);
     }
 
     return result;
@@ -237,7 +227,6 @@ vector<minterms> PIGenerator(vector<string> mntrms)
     minterms tempMinterm;
     vector<vector<minterms>> stageI;
     stageI = firstStage(mntrms);
-
 
     for (int i = 0; i < stageI.size() - 1; i++)
     {
@@ -260,15 +249,13 @@ vector<minterms> PIGenerator(vector<string> mntrms)
                     temp.push_back(tempMinterm);
                 }
             }
-            if (temp.size() != 0)
-            {
-                stageIp1.push_back(temp);
-                temp.clear();
-            }
+        }
+        if (temp.size() != 0)
+        {
+            stageIp1.push_back(temp);
+            temp.clear();
         }
     }
-
-
 
     for (int i = 0; i < stageI.size(); i++)
     {
@@ -277,24 +264,34 @@ vector<minterms> PIGenerator(vector<string> mntrms)
             if (stageI[i][j].isPrime)
             {
                 PI.push_back(stageI[i][j]);
+            }
+        }
+    }
 
+    if (stageIp1.size() != 0)
+    {
+        stageI = NthStage(stageIp1, PI);
+    }
+    else
+    {
+        for (int i = 0; i < stageI.size(); i++)
+        {
+            for (int j = 0; j < stageI[i].size(); j++)
+            {
+                PI.push_back(stageI[i][j]);
             }
         }
     }
 
 
-    if (stageIp1.size() != 0)
+    for (int i = 0; i < PI.size(); i++)
     {
-        stageI = NthStage(stageIp1, PI);
-
-    }
-    else
-    {
-        for(int i = 0; i < stageI.size(); i++)
+        for (int j = i + 1; j < PI.size(); j++)
         {
-            for(int j = 0; j < stageI[i].size(); j++)
+            if (PI[i].binRep == PI[j].binRep)
             {
-                PI.push_back(stageI[i][j]);
+                PI.erase(PI.begin() + j);
+                j--;
             }
         }
     }
@@ -304,9 +301,11 @@ vector<minterms> PIGenerator(vector<string> mntrms)
 
 int main(int argc, char *argv[])
 {
-    string SOP = "!A!B!C!D+!A!B!CD+A!B!C!D+A!BC!D+!AB!C!D+!ABC!D+AB!C!D+ABC!D"; // minterms: 0, 1, 8, 10, 4, 6, 12, 14
+    // string SOP = "!A!B!C!D+!A!B!CD+A!B!C!D+A!BC!D+!AB!C!D+!ABC!D+AB!C!D+ABC!D"; // minterms: 0, 1, 8, 10, 4, 6, 12, 14
     // string SOP = "ABCD+!A!B!C!D+!AB!CD+A!BC!D+!A!BCD+AB!C!D";
     // string SOP = "AB!C+ABC";
+    // string SOP = "AB+A!B";
+    string SOP = "!A!BC!D+!ABC!D+A!B!D!C+A!B!CD+A!BC!D+A!BCD+ABC!D+ABCD"; // 2,6,8,9,10,11,14,15
     vector<string> mntrms = toBinary(SOP);
     vector<minterms> PI;
     PI = PIGenerator(mntrms);
