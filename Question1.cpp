@@ -13,14 +13,30 @@ vector<char> extractVaribles(string expression) {
 
     for (char c : expression) {
         // Check if the character is an alphabet character
-        if (isalpha(c)) { 
+        if (isalpha(c)) {
             temp.push_back(c);
         }
-        
     }
     sort(temp.begin(), temp.end());
     temp.erase(unique(temp.begin(), temp.end()), temp.end());
     return temp;
+}
+bool containsOperator(string expression) {
+    vector<char> varibles = extractVaribles(expression);
+    if (varibles.size() == 1) {
+        return true;
+    }
+    else {
+
+        for (char c : expression) {
+            if (c == '*' || c == '+') {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
 }
 //Genrates all possible combinations in a truth table
 void generateCombinations(int numVariables, vector<vector<int>>& truthTable, vector<int> currentRow) {
@@ -38,9 +54,9 @@ void generateCombinations(int numVariables, vector<vector<int>>& truthTable, vec
     currentRow.pop_back();
 }
 
-map<char, string> MakePairs (string expression) {
+map<char, string> MakePairs(string expression) {
     map<char, string> variableBinary;
-  
+
 
     vector<char> varibles = extractVaribles(expression);
     vector<vector<int>> truthTable;
@@ -48,22 +64,22 @@ map<char, string> MakePairs (string expression) {
 
     generateCombinations(varibles.size(), truthTable, currentRow);
     int numCombinations = pow(2, varibles.size());
-   
-        string bitString = "";
-        for (int i = 0; i < varibles.size(); ++i) {
-            for (auto& row : truthTable) {
-                bitString += to_string(row[i]);
-            }
 
-            variableBinary.insert(make_pair(varibles[i], bitString));
-            bitString = "";
+    string bitString = "";
+    for (int i = 0; i < varibles.size(); ++i) {
+        for (auto& row : truthTable) {
+            bitString += to_string(row[i]);
         }
 
-        return variableBinary;
+        variableBinary.insert(make_pair(varibles[i], bitString));
+        bitString = "";
+    }
+
+    return variableBinary;
 
 }
 //AND
-string bitwiseAND( string str1, string str2) {
+string bitwiseAND(string str1, string str2) {
     string result;
     for (int i = 0; i < str1.length(); i++) {
         if (str1[i] == '1' && str2[i] == '1') {
@@ -77,7 +93,7 @@ string bitwiseAND( string str1, string str2) {
 }
 //OR
 string bitwiseOR(string str1, string str2) {
-   string result;
+    string result;
     for (int i = 0; i < str1.length(); i++) {
         if (str1[i] == '1' || str2[i] == '1') {
             result += '1';
@@ -88,12 +104,13 @@ string bitwiseOR(string str1, string str2) {
     }
     return result;
 }
+//NOT
 string bitwiseNOT(string& operand) {
     string result = "";
 
     for (char bit : operand) {
         if (bit == '0') {
-            result += '1';  
+            result += '1';
         }
         else if (bit == '1') {
             result += '0';
@@ -106,7 +123,7 @@ string bitwiseNOT(string& operand) {
     return result;
 }
 // Function to evaluate a boolean expression 
-void evaluateExpression(string expression,  map<char,string>& variableMap) {
+void evaluateExpression(string expression, map<char, string>& variableMap) {
     vector<string> operandStack;
     vector<char> operatorStack;
 
@@ -175,7 +192,7 @@ void evaluateExpression(string expression,  map<char,string>& variableMap) {
     }
 
     variableMap.insert(make_pair('F', operandStack.back()));
-    
+
 }
 string canonicalPOS(map<char, string> variableMap) {
     vector<int> indices;
@@ -183,12 +200,8 @@ string canonicalPOS(map<char, string> variableMap) {
     string result = "";
     char bit;
 
-    // Find the indices where '0' is present in the 'F' variable.
-    for (auto& x : variableMap) {
-        if (x.first == 'F') {
-            temp = x.second;
-        }
-    }
+    // Find the indices where '1' is present in the 'F' variable.
+    temp = variableMap['F'];
 
     for (int i = 0; i < temp.length(); i++) {
         if (temp[i] == '0') {
@@ -200,20 +213,20 @@ string canonicalPOS(map<char, string> variableMap) {
         result.append("(");
 
         for (auto& x : variableMap) {
-            
+
             if (x.first != 'F') {
                 bit = x.second.at(indices[i]);
-                if (bit != '1') {
-                   
+                if (bit != '0') {
+
                     result.append("!");
                     result += x.first;
-                   
+
                     result.append("+");
-                   
+
                     continue;
                 }
                 else {
-                   
+
                     result += x.first;
                     result.append("+");
                     continue;
@@ -237,11 +250,7 @@ string canonicalSOP(map<char, string> variableMap) {
     char bit;
 
     // Find the indices where '1' is present in the 'F' variable.
-    for (auto& x : variableMap) {
-        if (x.first == 'F') {
-            temp = x.second;
-        }
-    }
+     temp = variableMap['F'];
 
     for (int i = 0; i < temp.length(); i++) {
         if (temp[i] == '1') {
@@ -250,8 +259,8 @@ string canonicalSOP(map<char, string> variableMap) {
     }
 
     for (int i = 0; i < indices.size(); i++) {
-    
-    
+
+
         for (auto& x : variableMap) {
             if (x.first != 'F') {
                 bit = x.second.at(indices[i]);
@@ -271,7 +280,7 @@ string canonicalSOP(map<char, string> variableMap) {
         if (i < indices.size() - 1) {
             result += '+';
         }
-    
+
     }
     return result;
 }
@@ -299,21 +308,21 @@ bool isValidVariable(char c) {
     return (isalpha(c) && islower(c)) || (isalpha(c) && isupper(c));
 }
 //Validates Boolean Expression.
-bool isValidBooleanExpression(string expression) {
+bool isValidBooleanExpression(string& expression) {
     stack<char> parenthesesStack;
-
+    
     for (char c : expression) {
         if (c == '(') {
             parenthesesStack.push(c);
         }
         else if (c == ')') {
             if (parenthesesStack.empty() || parenthesesStack.top() != '(') {
-                return false; 
+                return false;
             }
             parenthesesStack.pop();
         }
         else if (isValidVariable(c) || c == '!' || c == '+' || c == '*') {
-            continue; 
+            continue;
         }
         else {
             return false;
@@ -321,19 +330,111 @@ bool isValidBooleanExpression(string expression) {
     }
     return parenthesesStack.empty();
 }
+
+void KarnaughMap(map<char, string> variableMap, string expression) {
+    vector<char> varibles = extractVaribles(expression);
+    string output = variableMap['F'];
+    vector<int> minterms;
+    vector<vector<char>> kMap2x2(2, vector<char>(2, '0'));
+    vector<vector<char>> kMap3x3(3, vector<char>(3, '0'));
+    vector<vector<char>> kMap4x4(4, vector<char>(4, '0'));
+
+    for (int i = 0; i < output.length(); i++) {
+        if (output[i] == '1') {
+            minterms.push_back(i);
+        }
+    }
+
+    switch (variableMap.size() - 1) {
+    case 1:
+        cout << "Kurnaugh Map : " << endl << endl;
+        cout << varibles[0] << endl;;
+
+        if (output[0] == '0') {
+        
+            cout << " | " << " 1 " << " | " << endl;
+        
+            cout << " | " << " 0 " << " | " << endl;
+        
+        }
+        else {
+        
+            cout << " | " << " 0 " << " | " << endl;
+
+            cout << " | " << " 1 " << " | " << endl;
+        
+        }
+        break;
+    case 2: 
+        for (int minterm : minterms) {
+            int row = minterm >> 1;
+            int col = minterm & 1;
+            kMap2x2[row][col] = '1';
+        }
+        
+        cout << "Kurnaugh Map : " << endl << endl;
+        cout << varibles[1] << " / " << varibles[0]<<endl;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                cout << " | " << kMap2x2[i][j] << " | ";
+            }
+            cout << endl;
+        }
+        break;
+    case 3:
+        for (int minterm : minterms) {
+            int row = minterm / 3;
+            int col = minterm % 3;
+            kMap3x3[row][col] = '1';
+        }
+
+        cout << "Kurnaugh Map : " << endl << endl;
+        cout << varibles[2] << varibles[1] << " / " << varibles[0] << endl;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cout << " | " << kMap3x3[i][j] << " | ";
+            }
+           cout << endl;
+        }
+        break;
+    case 4:
+        for (int minterm : minterms) {
+            int row = minterm / 4;
+            int col = minterm % 4;
+            kMap4x4[row][col] = '1';
+        }
+        cout << "Kurnaugh Map : " << endl << endl;
+
+        cout << varibles[3] << varibles[2] << " / " << varibles[1] << varibles[0] << endl;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                cout << " | " << kMap4x4[i][j] << " | ";
+            }
+            cout << endl;
+        }
+        break;
+    default:
+       cout << "Kurnaugh Map Unavalible as number of Variables exceeds 4!" << endl;
+       return;
+    }
+
+}
 int main() {
-	string BooleanExpressionInput = "";
-	
+    string BooleanExpressionInput = "";
+
     cout << "NOTE : AND = *, OR = +, NOT = !" << endl;
     cout << "NOTE : Include ( ) When Negating" << endl;
-	cout << "Enter a Boolean Expression : ";
-	getline(cin, BooleanExpressionInput);
-    BooleanExpressionInput =  removeDoubleNegations(BooleanExpressionInput);
+    cout << "Enter a Boolean Expression : ";
+    getline(cin, BooleanExpressionInput);
 
-    
-    if (isValidBooleanExpression(BooleanExpressionInput)) {
+    if (BooleanExpressionInput.empty()) {
+
+        cout << "ERROR : No Boolean Expression Entered!" << endl;
+    }
+
+    else if (isValidBooleanExpression(BooleanExpressionInput) && containsOperator(BooleanExpressionInput)) {
         cout << "---------------------------------------" << endl;
-
+        removeDoubleNegations(BooleanExpressionInput);
         map<char, string> stringCharPairs = MakePairs(BooleanExpressionInput);
         evaluateExpression(BooleanExpressionInput, stringCharPairs);
         string SOP = canonicalSOP(stringCharPairs);
@@ -352,19 +453,19 @@ int main() {
             cout << endl;
         }
         cout << "---------------------------------------" << endl;
-        cout << "Canonical SOP : " << SOP;
-        cout << endl;
-        cout << "Canonical POS : " << POS;
-        
-       
+        cout << "Canonical SOP : " << SOP << endl;
+        cout << "Canonical POS : " << POS << endl;
+        cout << "---------------------------------------" << endl;
+      
+     
+        KarnaughMap(stringCharPairs, BooleanExpressionInput);
+
     }
     else {
-    
+
         cout << "ERROR : Invalid Boolean Expression!" << endl;
     }
-   
+
 
 
 }
-
-
