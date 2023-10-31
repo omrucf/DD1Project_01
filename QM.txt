@@ -302,24 +302,24 @@ vector<minterms> PIGenerator(vector<string> mntrms)
     return PI;
 }
 
-int main(int argc, char *argv[])
-{
-    string SOP = "!A!B!C!D+!A!B!CD+A!B!C!D+A!BC!D+!AB!C!D+!ABC!D+AB!C!D+ABC!D"; // minterms: 0, 1, 8, 10, 4, 6, 12, 14
-    // string SOP = "ABCD+!A!B!C!D+!AB!CD+A!BC!D+!A!BCD+AB!C!D";
-    // string SOP = "AB!C+ABC";
-    vector<string> mntrms = toBinary(SOP);
-    vector<minterms> PI;
-    PI = PIGenerator(mntrms);
+// int main(int argc, char *argv[])
+// {
+//     string SOP = "!A!B!C!D+!A!B!CD+A!B!C!D+A!BC!D+!AB!C!D+!ABC!D+AB!C!D+ABC!D"; // minterms: 0, 1, 8, 10, 4, 6, 12, 14
+//     // string SOP = "ABCD+!A!B!C!D+!AB!CD+A!BC!D+!A!BCD+AB!C!D";
+//     // string SOP = "AB!C+ABC";
+//     vector<string> mntrms = toBinary(SOP);
+//     vector<minterms> PI;
+//     PI = PIGenerator(mntrms);
 
-    for (int i = 0; i < PI.size(); i++)
-    {
-        cout << PI[i].binRep << "\tdec:\t";
-        for (auto it = PI[i].decimals.begin(); it != PI[i].decimals.end(); it++)
-        {
-            cout << *it << " ";
-        }
-        cout << endl;
-    }
+//     for (int i = 0; i < PI.size(); i++)
+//     {
+//         cout << PI[i].binRep << "\tdec:\t";
+//         for (auto it = PI[i].decimals.begin(); it != PI[i].decimals.end(); it++)
+//         {
+//             cout << *it << " ";
+//         }
+//         cout << endl;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

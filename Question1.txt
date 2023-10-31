@@ -4,6 +4,8 @@
 #include <vector>
 #include<algorithm>
 #include<map>
+#include <cmath>
+
 
 using namespace std;
 //extracts all the varibles from a boolean expression
@@ -419,53 +421,53 @@ void KarnaughMap(map<char, string> variableMap, string expression) {
     }
 
 }
-int main() {
-    string BooleanExpressionInput = "";
+// int main() {
+//     string BooleanExpressionInput = "";
 
-    cout << "NOTE : AND = *, OR = +, NOT = !" << endl;
-    cout << "NOTE : Include ( ) When Negating" << endl;
-    cout << "Enter a Boolean Expression : ";
-    getline(cin, BooleanExpressionInput);
+//     cout << "NOTE : AND = *, OR = +, NOT = !" << endl;
+//     cout << "NOTE : Include ( ) When Negating" << endl;
+//     cout << "Enter a Boolean Expression : ";
+//     getline(cin, BooleanExpressionInput);
 
-    if (BooleanExpressionInput.empty()) {
+//     if (BooleanExpressionInput.empty()) {
 
-        cout << "ERROR : No Boolean Expression Entered!" << endl;
-    }
+//         cout << "ERROR : No Boolean Expression Entered!" << endl;
+//     }
 
-    else if (isValidBooleanExpression(BooleanExpressionInput) && containsOperator(BooleanExpressionInput)) {
-        cout << "---------------------------------------" << endl;
-        removeDoubleNegations(BooleanExpressionInput);
-        map<char, string> stringCharPairs = MakePairs(BooleanExpressionInput);
-        evaluateExpression(BooleanExpressionInput, stringCharPairs);
-        string SOP = canonicalSOP(stringCharPairs);
-        string POS = canonicalPOS(stringCharPairs);
-        for (auto& x : stringCharPairs) {
-            cout << x.first << "\t";
-        }
+//     else if (isValidBooleanExpression(BooleanExpressionInput) && containsOperator(BooleanExpressionInput)) {
+//         cout << "---------------------------------------" << endl;
+//         removeDoubleNegations(BooleanExpressionInput);
+//         map<char, string> stringCharPairs = MakePairs(BooleanExpressionInput);
+//         evaluateExpression(BooleanExpressionInput, stringCharPairs);
+//         string SOP = canonicalSOP(stringCharPairs);
+//         string POS = canonicalPOS(stringCharPairs);
+//         for (auto& x : stringCharPairs) {
+//             cout << x.first << "\t";
+//         }
 
-        // Print table rows
-        int numRows = stringCharPairs.begin()->second.length();
-        for (int i = numRows; i >= 0; i--) {
-            for (auto& x : stringCharPairs) {
-                cout << x.second[i] << "\t";
-            }
+//         // Print table rows
+//         int numRows = stringCharPairs.begin()->second.length();
+//         for (int i = numRows; i >= 0; i--) {
+//             for (auto& x : stringCharPairs) {
+//                 cout << x.second[i] << "\t";
+//             }
 
-            cout << endl;
-        }
-        cout << "---------------------------------------" << endl;
-        cout << "Canonical SOP : " << SOP << endl;
-        cout << "Canonical POS : " << POS << endl;
-        cout << "---------------------------------------" << endl;
+//             cout << endl;
+//         }
+//         cout << "---------------------------------------" << endl;
+//         cout << "Canonical SOP : " << SOP << endl;
+//         cout << "Canonical POS : " << POS << endl;
+//         cout << "---------------------------------------" << endl;
       
      
-        KarnaughMap(stringCharPairs, BooleanExpressionInput);
+//         KarnaughMap(stringCharPairs, BooleanExpressionInput);
 
-    }
-    else {
+//     }
+//     else {
 
-        cout << "ERROR : Invalid Boolean Expression!" << endl;
-    }
+//         cout << "ERROR : Invalid Boolean Expression!" << endl;
+//     }
 
 
 
-}
+// }
