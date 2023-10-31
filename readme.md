@@ -1,14 +1,14 @@
-# Quine-McCluskey Algorithm for Boolean Function Manipulation
+# Quine-McCluskey Algorithm for Boolean Function Simplification
 
 ## Overview
 
-This C++ program is designed to facilitate the manipulation and analysis of boolean functions using the Quine-McCluskey algorithm. It provides several key features, including:
+This C++ program is designed to simplify boolean functions using the Quine-McCluskey algorithm. It provides several key features, including:
 
 - Conversion of boolean function to Canonical Sum of Products (SOP) and Product of Sums (POS) forms.
 - Generation of a truth table for the given boolean function.
 - Construction of Karnaugh Maps (K-Maps) for visualization and simplification.
 - Minimization of the boolean function using the Quine-McCluskey algorithm.
-- Identification of prime implicants.
+- Identification of prime implicants and Essential Prime Implicants.
 - Visualization of the logic circuit for the minimized function.
 
 ## Prerequisites
@@ -16,39 +16,26 @@ This C++ program is designed to facilitate the manipulation and analysis of bool
 Before using this C++ program, ensure you have the following prerequisites:
 
 - A C++ compiler and development environment (e.g., GCC, Visual Studio).
-- Any required libraries or modules mentioned in the program documentation.
+- Any required libraries or modules mentioned used.
 
 ## Usage
 
-1. **Input**: The program takes a boolean function as input. You can input the function in various forms, such as a truth table, a boolean expression, or a list of minterms/maxterms.
+1. **Input**: The program takes a boolean function as input.
 
 2. **Canonical Forms**:
-   - To obtain the Canonical Sum of Products (SOP) form, run the program with the appropriate command.
-   - To obtain the Canonical Product of Sums (POS) form, use the corresponding command.
+   - The program prints the canonical forms.
 
 3. **Truth Table**:
-   - Generate a truth table for the given boolean function using the provided command.
+   - The program generates a truth table for the given boolean function.
 
 4. **K-Map**:
-   - Create Karnaugh Maps to visualize the function. Specify the number of variables and other required parameters.
+   - The program creates Karnaugh Maps to visualize the function (4 variables max).
 
 5. **Minimization**:
    - Utilize the Quine-McCluskey algorithm to minimize the boolean function. The minimized function will be displayed.
 
 6. **Prime Implicants**:
-   - Identify prime implicants in the minimized function. The program will list these for you.
+   - The program will list the prime Implicants.
 
 7. **Logic Circuit**:
    - Visualize the logic circuit for the minimized function. This can help in practical circuit design.
-
-## Example Usage
-
-```shell
-# To convert a boolean expression to SOP form
-./quine_mccluskey -input "A'BC + AB'C + ABC'" -sop
-
-# To generate a truth table for a boolean expression
-./quine_mccluskey -input "A'B + AB'C + ABC'" -truth-table
-
-# To create a K-Map for a 4-variable function
-./quine_mccluskey -input "A'BCD + AB'CD + ABC'D + ABCD'" -k-map -variables 4
