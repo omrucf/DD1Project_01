@@ -4,58 +4,20 @@
 #include <string>
 #include <map>
 #include <algorithm>
-// #include "QM.cpp"
+#include "QM.cpp"
+
 
 using namespace std;
-struct minterms
-{
-    string binRep;
-    set<int> decimals;
-    set<int> posOf_;
-    bool isPrime = true;
-};
+// struct minterms
+// {
+//     string binRep;
+//     set<int> decimals;
+//     set<int> posOf_;
+//     bool isPrime = true;
+// };
 
 vector<int> onSet;
 
-vector<minterms> findEPIs(vector<minterms> primeImplicants, vector<int> onSet)
-{
-
-    vector<minterms> EPI;
-    int onSetCoverageCount[onSet.size()];
-    for (int i = 0; i < onSet.size(); i++)
-    {
-        onSetCoverageCount[i] = 0;
-    }
-
-    // update coverage count
-    for (int i = 0; i < primeImplicants.size(); i++)
-    {
-        for (int j = 0; j < onSet.size(); j++)
-        {
-            if (primeImplicants[i].decimals.find(onSet[j]) != primeImplicants[i].decimals.end())
-            {
-                onSetCoverageCount[j]++;
-            }
-        }
-    }
-
-    for (int it = 0; it < onSet.size(); it++)
-    {
-        if (onSetCoverageCount[it] == 1)
-        {
-            for (int i = 0; i < primeImplicants.size(); i++)
-            {
-                if (primeImplicants[i].decimals.find(onSet[it]) != primeImplicants[i].decimals.end())
-                    EPI.push_back(primeImplicants[i]);
-            }
-        }
-    }
-
-    // for(int i = 0; i < EPI.size(); i++)
-    //     cout << EPI[i].binRep << " ";
-
-    return EPI;
-}
 
 bool booleanRep(minterms input)
 {
@@ -96,18 +58,65 @@ bool mintermsNotCovered(vector<minterms> epi, vector<int> onSet)
             mintermsCovered.insert(minterm);
         }
     }
-
+    
+    cout << "minterms not covered: ";
     for (int i = 0; i < onSet.size(); i++)
     {
         if (mintermsCovered.find(onSet[i]) == mintermsCovered.end())
         {
-            cout << onSet[i] << "   ";
+            cout << onSet[i] << "\t";
         }
     }
 
     cout << endl;
     return true;
 }
+
+vector<minterms> findEPIs(vector<minterms> primeImplicants, vector<int> onSet)
+{
+    vector<minterms> EPI;
+    int onSetCoverageCount[onSet.size()];
+    for (int i = 0; i < onSet.size(); i++)
+    {
+        onSetCoverageCount[i] = 0;
+    }
+
+    // update coverage count
+    for (int i = 0; i < primeImplicants.size(); i++)
+    {
+        for (int j = 0; j < onSet.size(); j++)
+        {
+            if (primeImplicants[i].decimals.find(onSet[j]) != primeImplicants[i].decimals.end())
+            {
+                onSetCoverageCount[j]++;
+            }
+        }
+    }
+
+    for (int it = 0; it < onSet.size(); it++)
+    {
+        if (onSetCoverageCount[it] == 1)
+        {
+            for (int i = 0; i < primeImplicants.size(); i++)
+            {
+                if (primeImplicants[i].decimals.find(onSet[it]) != primeImplicants[i].decimals.end())
+                    EPI.push_back(primeImplicants[i]);
+            }
+        }
+    }
+
+    cout << "EPIs: ";
+    for(int i = 0; i < EPI.size(); i++)
+        booleanRep(EPI[i]);
+        cout << "\t";
+
+    cout << endl;
+
+    mintermsNotCovered(EPI, onSet);
+
+    return EPI;
+}
+
 
 // bool isDominatingColumn(vector<minterms> primeImplicants, vector<int> onSet, int column)
 // {
@@ -364,89 +373,89 @@ vector<int> setOnset(vector<minterms> PI)
     return result;
 }
 
-int main()
-{
+// int main()
+// {
 
-    vector<minterms> primeImplicants;
-    minterms m1;
-    m1.decimals.insert(4);
-    m1.decimals.insert(0);
-    m1.binRep = "0_00";
+//     vector<minterms> primeImplicants;
+//     minterms m1;
+//     m1.decimals.insert(4);
+//     m1.decimals.insert(0);
+//     m1.binRep = "0_00";
 
-    minterms m2;
-    m2.decimals.insert(0);
-    m2.decimals.insert(8);
-    m2.binRep = "_000";
+//     minterms m2;
+//     m2.decimals.insert(0);
+//     m2.decimals.insert(8);
+//     m2.binRep = "_000";
 
-    minterms m3;
-    m3.decimals.insert(8);
-    m3.decimals.insert(9);
-    m3.binRep = "100_";
+//     minterms m3;
+//     m3.decimals.insert(8);
+//     m3.decimals.insert(9);
+//     m3.binRep = "100_";
 
-    minterms m4;
-    m4.decimals.insert(8);
-    m4.decimals.insert(10);
-    m4.binRep = "10_0";
+//     minterms m4;
+//     m4.decimals.insert(8);
+//     m4.decimals.insert(10);
+//     m4.binRep = "10_0";
 
-    minterms m5;
-    m5.decimals.insert(9);
-    m5.decimals.insert(13);
-    m5.binRep = "1_01";
+//     minterms m5;
+//     m5.decimals.insert(9);
+//     m5.decimals.insert(13);
+//     m5.binRep = "1_01";
 
-    minterms m6;
-    m6.decimals.insert(4);
-    m6.decimals.insert(5);
-    m6.decimals.insert(6);
-    m6.decimals.insert(7);
-    m6.binRep = "01__";
+//     minterms m6;
+//     m6.decimals.insert(4);
+//     m6.decimals.insert(5);
+//     m6.decimals.insert(6);
+//     m6.decimals.insert(7);
+//     m6.binRep = "01__";
 
-    minterms m7;
-    m7.decimals.insert(5);
-    m7.decimals.insert(7);
-    m7.decimals.insert(13);
-    m7.decimals.insert(15);
-    m7.binRep = "_1_1";
+//     minterms m7;
+//     m7.decimals.insert(5);
+//     m7.decimals.insert(7);
+//     m7.decimals.insert(13);
+//     m7.decimals.insert(15);
+//     m7.binRep = "_1_1";
 
-    primeImplicants.push_back(m1);
-    primeImplicants.push_back(m2);
-    primeImplicants.push_back(m3);
-    primeImplicants.push_back(m4);
-    primeImplicants.push_back(m5);
-    primeImplicants.push_back(m6);
-    primeImplicants.push_back(m7);
+//     primeImplicants.push_back(m1);
+//     primeImplicants.push_back(m2);
+//     primeImplicants.push_back(m3);
+//     primeImplicants.push_back(m4);
+//     primeImplicants.push_back(m5);
+//     primeImplicants.push_back(m6);
+//     primeImplicants.push_back(m7);
 
-    vector<int> onset;
-    onset.push_back(4);
-    onset.push_back(5);
-    onset.push_back(6);
-    onset.push_back(8);
-    onset.push_back(9);
-    onset.push_back(10);
-    onset.push_back(13);
+//     vector<int> onset;
+//     onset.push_back(4);
+//     onset.push_back(5);
+//     onset.push_back(6);
+//     onset.push_back(8);
+//     onset.push_back(9);
+//     onset.push_back(10);
+//     onset.push_back(13);
 
-    // for(auto it = primeImplicants.begin(); it != primeImplicants.end(); it++)
-    // {
-    //     for(auto it2 = it->decimals.begin(); it2 != it->decimals.end(); it2++)
-    //     {
-    //         if(find(onset.begin(), onset.end(), *it2) == onset.end())
-    //         {
-    // cout << "-------------------" << endl;
-    //             set<int>::iterator it3 = find(it->decimals.begin(), it->decimals.end(), *it2);
-    //             it->decimals.erase(it3);
-    //         }
-    //     }
-    // }
+//     // for(auto it = primeImplicants.begin(); it != primeImplicants.end(); it++)
+//     // {
+//     //     for(auto it2 = it->decimals.begin(); it2 != it->decimals.end(); it2++)
+//     //     {
+//     //         if(find(onset.begin(), onset.end(), *it2) == onset.end())
+//     //         {
+//     // cout << "-------------------" << endl;
+//     //             set<int>::iterator it3 = find(it->decimals.begin(), it->decimals.end(), *it2);
+//     //             it->decimals.erase(it3);
+//     //         }
+//     //     }
+//     // }
 
-    vector<minterms> epi;
-    vector<minterms> out;
-    bool c = true;
-    findMinExpression(primeImplicants, onset, c, out, true);
+//     vector<minterms> epi;
+//     vector<minterms> out;
+//     bool c = true;
+//     findMinExpression(primeImplicants, onset, c, out, true);
 
-    for (auto it = out.begin(); it != out.end(); it++)
-    {
-        cout << it->binRep;
-        booleanRep(*it);
-    }
+//     for (auto it = out.begin(); it != out.end(); it++)
+//     {
+//         cout << it->binRep;
+//         booleanRep(*it);
+//     }
 
-    cout << endl;
-}
+//     cout << endl;
+// }
