@@ -397,62 +397,50 @@ bool isValidBooleanExpression(string &expression)
     }
     return parenthesesStack.empty();
 }
-
-vector<vector<char>> generateKMap(int numVariables, const vector<int> &minterms)
+int calculateNumVariables(const std::vector<int> &minterms)
 {
-    vector<vector<char>> kMap;
+    int highestMinterm = 0;
+    for (int minterm : minterms)
+    {
+        if (minterm > highestMinterm)
+        {
+            highestMinterm = minterm;
+        }
+    }
+    // Calculate the number of variables as the logarithm of the highest minterm
+    int numVariables = static_cast<int>(log2(highestMinterm) + 1);
+    return numVariables;
+}
 
-    if (numVariables == 1)
+// Function to generate Karnaugh Map for a given list of minterms
+void printKMap(const std::vector<int> &minterms)
+{
+    int numVariables = calculateNumVariables(minterms);
+
+    // Calculate the number of rows and columns in the K-Map based on the number of variables
+    int numRows = 1 << (numVariables / 2);                  // 2^(numVariables/2)
+    int numCols = 1 << (numVariables - (numVariables / 2)); // 2^(numVariables - numVariables/2)
+
+    // Create a 2D vector for the K-Map and initialize it with '0'
+    std::vector<std::vector<char>> kMap(numRows, std::vector<char>(numCols, '0'));
+
+    // Mark the cells corresponding to the minterms with '1'
+    for (int minterm : minterms)
     {
-        kMap = vector<vector<char>>(2, vector<char>(1, '0'));
-        for (int minterm : minterms)
-        {
-            kMap[minterm][0] = '1';
-        }
-    }
-    else if (numVariables == 2)
-    {
-        kMap = vector<vector<char>>(2, vector<char>(2, '0'));
-        for (int minterm : minterms)
-        {
-            int row = (minterm >> 1) & 1;
-            int col = minterm & 1;
-            kMap[row][col] = '1';
-        }
-    }
-    else if (numVariables == 3)
-    {
-        kMap = vector<vector<char>>(4, vector<char>(4, '0'));
-        for (int minterm : minterms)
-        {
-            int row = (minterm >> 1) & 3;
-            int col = minterm & 3;
-            kMap[row][col] = '1';
-        }
-    }
-    else if (numVariables == 4)
-    {
-        kMap = vector<vector<char>>(4, vector<char>(4, '0'));
-        for (int minterm : minterms)
-        {
-            int row = (minterm >> 2) & 3;
-            int col = minterm & 3;
-            kMap[row][col] = '1';
-        }
+        int row = minterm / numCols;
+        int col = minterm % numCols;
+        kMap[row][col] = '1';
     }
 
-    //print k-map
-    for (int i = 0; i < kMap.size(); i++)
+    // Print the K-Map
+    for (int i = 0; i < numRows; i++)
     {
-        cout << "==============================";
-        for (int j = 0; j < kMap[i].size(); j++)
+        for (int j = 0; j < numCols; j++)
         {
-            cout << kMap[i][j] << " | ";
+            std::cout << " | " << kMap[i][j] << " ";
         }
-        cout << endl;
+        std::cout << " | " << std::endl;
     }
-
-    return kMap;
 }
 
 // void KarnaughMap(map<char, string> variableMap, string expression)

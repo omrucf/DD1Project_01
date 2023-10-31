@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         vector<minterms> EPIs = findEPIs(PI, onset);
         
 
-            generateKMap(splitString(SOP,'+')[0].length(), onset);
+        printKMap(onset);
     }
     else
     {
