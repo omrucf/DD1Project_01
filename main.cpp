@@ -68,9 +68,10 @@ int main(int argc, char *argv[])
         onset.erase(unique(onset.begin(), onset.end()), onset.end());
 
         vector<minterms> EPIs = findEPIs(PI, onset);
-        
 
-        printKMap(onset);
+        KarnaughMap(stringCharPairs, BooleanExpressionInput);
+
+        // printKMap(onset);
     }
     else
     {

@@ -397,165 +397,165 @@ bool isValidBooleanExpression(string &expression)
     }
     return parenthesesStack.empty();
 }
-int calculateNumVariables(const std::vector<int> &minterms)
-{
-    int highestMinterm = 0;
-    for (int minterm : minterms)
-    {
-        if (minterm > highestMinterm)
-        {
-            highestMinterm = minterm;
-        }
-    }
-    // Calculate the number of variables as the logarithm of the highest minterm
-    int numVariables = static_cast<int>(log2(highestMinterm) + 1);
-    return numVariables;
-}
-
-// Function to generate Karnaugh Map for a given list of minterms
-void printKMap(const std::vector<int> &minterms)
-{
-    int numVariables = calculateNumVariables(minterms);
-
-    // Calculate the number of rows and columns in the K-Map based on the number of variables
-    int numRows = 1 << (numVariables / 2);                  // 2^(numVariables/2)
-    int numCols = 1 << (numVariables - (numVariables / 2)); // 2^(numVariables - numVariables/2)
-
-    // Create a 2D vector for the K-Map and initialize it with '0'
-    std::vector<std::vector<char>> kMap(numRows, std::vector<char>(numCols, '0'));
-
-    // Mark the cells corresponding to the minterms with '1'
-    for (int minterm : minterms)
-    {
-        int row = minterm / numCols;
-        int col = minterm % numCols;
-        kMap[row][col] = '1';
-    }
-
-    // Print the K-Map
-    for (int i = 0; i < numRows; i++)
-    {
-        for (int j = 0; j < numCols; j++)
-        {
-            std::cout << " | " << kMap[i][j] << " ";
-        }
-        std::cout << " | " << std::endl;
-    }
-}
-
-// void KarnaughMap(map<char, string> variableMap, string expression)
+// int calculateNumVariables(const std::vector<int> &minterms)
 // {
-//     vector<char> varibles = extractVaribles(expression);
-//     string output = variableMap['F'];
-//     vector<int> minterms;
-//     vector<vector<char>> kMap2x2(2, vector<char>(2, '0'));
-//     vector<vector<char>> kMap3x3(4, vector<char>(2, '0'));
-//     vector<vector<char>> kMap4x4(4, vector<char>(4, '0'));
-
-//     for (int i = 0; i < output.length(); i++)
+//     int highestMinterm = 0;
+//     for (int minterm : minterms)
 //     {
-//         if (output[i] == '1')
+//         if (minterm > highestMinterm)
 //         {
-//             minterms.push_back(i);
+//             highestMinterm = minterm;
 //         }
 //     }
+//     // Calculate the number of variables as the logarithm of the highest minterm
+//     int numVariables = static_cast<int>(log2(highestMinterm) + 1);
+//     return numVariables;
+// }
 
-//     switch (variableMap.size() - 1)
+// // Function to generate Karnaugh Map for a given list of minterms
+// void printKMap(const std::vector<int> &minterms)
+// {
+//     int numVariables = calculateNumVariables(minterms);
+
+//     // Calculate the number of rows and columns in the K-Map based on the number of variables
+//     int numRows = 1 << (numVariables / 2);                  // 2^(numVariables/2)
+//     int numCols = 1 << (numVariables - (numVariables / 2)); // 2^(numVariables - numVariables/2)
+
+//     // Create a 2D vector for the K-Map and initialize it with '0'
+//     std::vector<std::vector<char>> kMap(numRows, std::vector<char>(numCols, '0'));
+
+//     // Mark the cells corresponding to the minterms with '1'
+//     for (int minterm : minterms)
 //     {
-//     case 1:
-//         cout << "Kurnaugh Map : " << endl
-//              << endl;
-//         cout << varibles[0] << endl;
-//         ;
+//         int row = minterm / numCols;
+//         int col = minterm % numCols;
+//         kMap[row][col] = '1';
+//     }
 
-//         if (output[0] == '0')
+//     // Print the K-Map
+//     for (int i = 0; i < numRows; i++)
+//     {
+//         for (int j = 0; j < numCols; j++)
 //         {
-
-//             cout << " | "
-//                  << " 1 "
-//                  << " | " << endl;
-
-//             cout << " | "
-//                  << " 0 "
-//                  << " | " << endl;
+//             std::cout << " | " << kMap[i][j] << " ";
 //         }
-//         else
-//         {
-
-//             cout << " | "
-//                  << " 0 "
-//                  << " | " << endl;
-
-//             cout << " | "
-//                  << " 1 "
-//                  << " | " << endl;
-//         }
-//         break;
-//     case 2:
-//         for (int minterm : minterms)
-//         {
-//             int row = minterm >> 1;
-//             int col = minterm & 1;
-//             kMap2x2[row][col] = '1';
-//         }
-
-//         cout << "Kurnaugh Map : " << endl
-//              << endl;
-//         cout << varibles[1] << " / " << varibles[0] << endl;
-//         for (int i = 0; i < 2; i++)
-//         {
-//             for (int j = 0; j < 2; j++)
-//             {
-//                 cout << " | " << kMap2x2[i][j] << " | ";
-//             }
-//             cout << endl;
-//         }
-//         break;
-//     case 3:
-//         for (int minterm : minterms)
-//         {
-//             int row = minterm / 3;
-//             int col = minterm % 3;
-//             kMap3x3[row][col] = '1';
-//         }
-
-//         cout << "Kurnaugh Map : " << endl
-//              << endl;
-//         cout << varibles[2] << varibles[1] << " / " << varibles[0] << endl;
-//         for (int i = 0; i < 4; i++)
-//         {
-//             for (int j = 0; j < 2; j++)
-//             {
-//                 cout << " | " << kMap3x3[i][j] << " | ";
-//             }
-//             cout << endl;
-//         }
-//         break;
-//     case 4:
-//         for (int minterm : minterms)
-//         {
-//             int row = minterm / 4;
-//             int col = minterm % 4;
-//             kMap4x4[row][col] = '1';
-//         }
-//         cout << "Kurnaugh Map : " << endl
-//              << endl;
-
-//         cout << varibles[3] << varibles[2] << " / " << varibles[1] << varibles[0] << endl;
-//         for (int i = 0; i < 4; i++)
-//         {
-//             for (int j = 0; j < 4; j++)
-//             {
-//                 cout << " | " << kMap4x4[i][j] << " | ";
-//             }
-//             cout << endl;
-//         }
-//         break;
-//     default:
-//         cout << "Kurnaugh Map Unavalible as number of Variables exceeds 4!" << endl;
-//         return;
+//         std::cout << " | " << std::endl;
 //     }
 // }
+
+void KarnaughMap(map<char, string> variableMap, string expression)
+{
+    vector<char> varibles = extractVaribles(expression);
+    string output = variableMap['F'];
+    vector<int> minterms;
+    vector<vector<char>> kMap2x2(2, vector<char>(2, '0'));
+    vector<vector<char>> kMap3x3(4, vector<char>(2, '0'));
+    vector<vector<char>> kMap4x4(4, vector<char>(4, '0'));
+
+    for (int i = 0; i < output.length(); i++)
+    {
+        if (output[i] == '1')
+        {
+            minterms.push_back(i);
+        }
+    }
+
+    switch (variableMap.size() - 1)
+    {
+    case 1:
+        cout << "Kurnaugh Map : " << endl
+             << endl;
+        cout << varibles[0] << endl;
+        ;
+
+        if (output[0] == '0')
+        {
+
+            cout << " | "
+                 << " 1 "
+                 << " | " << endl;
+
+            cout << " | "
+                 << " 0 "
+                 << " | " << endl;
+        }
+        else
+        {
+
+            cout << " | "
+                 << " 0 "
+                 << " | " << endl;
+
+            cout << " | "
+                 << " 1 "
+                 << " | " << endl;
+        }
+        break;
+    case 2:
+        for (int minterm : minterms)
+        {
+            int row = minterm >> 1;
+            int col = minterm & 1;
+            kMap2x2[row][col] = '1';
+        }
+
+        cout << "Kurnaugh Map : " << endl
+             << endl;
+        cout << varibles[1] << " / " << varibles[0] << endl;
+        for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                cout << " | " << kMap2x2[i][j] << " | ";
+            }
+            cout << endl;
+        }
+        break;
+    case 3:
+        for (int minterm : minterms)
+        {
+            int row = minterm / 3;
+            int col = minterm % 3;
+            kMap3x3[row][col] = '1';
+        }
+
+        cout << "Kurnaugh Map : " << endl
+             << endl;
+        cout << varibles[2] << varibles[1] << " / " << varibles[0] << endl;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                cout << " | " << kMap3x3[i][j] << " | ";
+            }
+            cout << endl;
+        }
+        break;
+    case 4:
+        for (int minterm : minterms)
+        {
+            int row = minterm / 4;
+            int col = minterm % 4;
+            kMap4x4[row][col] = '1';
+        }
+        cout << "Kurnaugh Map : " << endl
+             << endl;
+
+        cout << varibles[3] << varibles[2] << " / " << varibles[1] << varibles[0] << endl;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                cout << " | " << kMap4x4[i][j] << " | ";
+            }
+            cout << endl;
+        }
+        break;
+    default:
+        cout << "Kurnaugh Map Unavalible as number of Variables exceeds 4!" << endl;
+        return;
+    }
+}
 // // int main() {
 //     string BooleanExpressionInput = "";
 
