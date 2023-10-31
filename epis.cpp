@@ -2,6 +2,7 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <map>
 #include <algorithm>
 
 using namespace std;
@@ -50,6 +51,9 @@ vector<minterms> findEPIs(vector<minterms> primeImplicants, vector<int> onSet)
         }
     }
 
+    // for(int i = 0; i < EPI.size(); i++)
+    //     cout << EPI[i].binRep << " ";
+
     return EPI;
 }
 
@@ -63,10 +67,10 @@ bool booleanRep(minterms input)
 
         } else if(input.binRep[i] == '0') {
             string temp;
-            temp += '(';
+            //temp += '(';
             temp += char(33);
             temp += char(i + 65);
-            temp += ')';
+            //temp += ')';
             cout << temp;
         }
         else if(input.binRep[i] == '_'){
@@ -103,50 +107,52 @@ bool mintermsNotCovered(vector<minterms> epi, vector<int> onSet)
     return true;
 }
 
-bool isDominatingColumn(vector<minterms> primeImplicants, vector<int> onSet, int column)
-{
-    vector<set<int>> columns;
-    for(int i = 0; i < primeImplicants.size(); i++)
-    {
-        for(auto it = primeImplicants[i].decimals.begin(); it != primeImplicants[i].decimals.end(); it++)
-            columns[*it].insert(i);
-    }
+// bool isDominatingColumn(vector<minterms> primeImplicants, vector<int> onSet, int column)
+// {
+//     vector<set<int>> columns;
+//     for(int i = 0; i < primeImplicants.size(); i++)
+//     {
+//         for(auto it = primeImplicants[i].decimals.begin(); it != primeImplicants[i].decimals.end(); it++)
+//             columns[*it].insert(i);
+//     }
 
-    int count = -1;
-    for(auto it = columns.begin(); it != columns.end(); it++)
-    {
-        count ++;
-        if(includes(columns[column].begin(), columns[column].end(),it->begin(), it->end()) && column != count)
-            return true;
-    }
+//     int count = -1;
+//     for(auto it = columns.begin(); it != columns.end(); it++)
+//     {
+//         count ++;
+//         if(includes(columns[column].begin(), columns[column].end(),it->begin(), it->end()) && column != count)
+//             return true;
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
-bool isDominatedRow(vector<minterms> primeImplicants, vector<int> onSet, int row)
-{
-    int count = -1;
-    for(auto it = primeImplicants.begin(); it != primeImplicants.end(); it++)
-    {
-        count ++;
-        if(includes(it->decimals.begin(), it->decimals.end(), primeImplicants[row].decimals.begin(), primeImplicants[row].decimals.end()) && row != count)
-            return true;
-    }
+// bool isDominatedRow(vector<minterms> primeImplicants, vector<int> onSet, int row)
+// {
+//     int count = -1;
+//     for(auto it = primeImplicants.begin(); it != primeImplicants.end(); it++)
+//     {
+//         count ++;
+//         if(includes(it->decimals.begin(), it->decimals.end(), primeImplicants[row].decimals.begin(), primeImplicants[row].decimals.end()) && row != count)
+//             return true;
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
-vector<minterms> findMinExpression(vector<minterms> &primeImplicants, vector<int> &onSet, bool changeHappened, vector<minterms> &output, bool firstEnter)
+vector<minterms> findMinExpression(vector<minterms> &primeImplicants, vector<int> &onSet, bool &changeHappened, vector<minterms> output, bool firstEnter)
 {
     if(changeHappened == false)
     {
-        cout << "m";
+        cout << "o";
+        //cout << output.size();
         return output;
     }
 
     vector<minterms> temp;
     temp.clear();
     temp = findEPIs(primeImplicants, onSet);
+    //cout << "t" << temp.size() << " ";
 
     if(firstEnter)
     {
@@ -156,74 +162,175 @@ vector<minterms> findMinExpression(vector<minterms> &primeImplicants, vector<int
 
     if(temp.size() > 0)
     {
+        //cout << onSet.size();
+
+        bool change = false;
         for(auto it = temp.begin();  it != temp.end(); it++)
         {
+
             output.push_back(*it);
+            vector<int> toRemove;
+            toRemove.clear();
 
             for(auto it2 = it->decimals.begin(); it2 != it->decimals.end(); it2++)
             {
-                for(auto it3 = onSet.begin(); it3 != onSet.end(); it3++)
+                for(auto it3 = onSet.begin(); it3 != onSet.end();)
                 {
                     if(*it3 == *it2)
                     {
-                        onSet.erase(it3);
-                        //cout << *it3 << " ";
+                        toRemove.push_back(*it3);
+                        it3 = onSet.erase(it3);
+                        change = true;
+                    } else
+                    {
+                        it3++;
                     }
                 }
             }
+            
+            if(onSet.size() ==0)
+            {
+                for(auto it = output.begin(); it != output.end(); it++)
+                {
+                    booleanRep(*it);
+                }
 
+                return output;
+            }
+
+            
             for(auto it2  = primeImplicants.begin(); it2 != primeImplicants.end(); it2++)
             {
                 if(it2->binRep == it->binRep)
                 {
                     primeImplicants.erase(it2);
+                    change = true;
+                }
+
+                for(int i = 0; i < toRemove.size(); i++)
+                {
+                    if(it2->decimals.find(toRemove[i]) != it2->decimals.end())
+                    {
+                        it2->decimals.erase(toRemove[i]);
+                    }
                 }
             }
-            
-            // for(auto it2  = onSet.begin(); it2 != onSet.end(); it2++)
-            // {
-            //     cout << (*it2) << " ";
-            // }
-            //     cout << endl;
 
-            findMinExpression(primeImplicants, onSet, true, output, firstEnter);
+            auto i = primeImplicants.begin();
+            while(i != primeImplicants.end())
+            {
+                if(i->decimals.size() == 0)
+                    i = primeImplicants.erase(i);
+                else
+                    i++;
+            }            
         }
 
+        if(onSet.size() < 2)
+        {
+            cout << "y";
+            return output;
+        }
+
+        findMinExpression(primeImplicants, onSet, change, output, firstEnter);
     } 
     else if (temp.size() == 0){
-        bool changed = false;
 
-        auto it = primeImplicants.begin();
-        for(int i = 0; i < primeImplicants.size(); i++)
+        bool changed = false;
+        vector<minterms> rm;
+        for(auto it2 = primeImplicants.begin(); it2 != primeImplicants.end(); it2++)
         {
-            if(isDominatedRow(primeImplicants, onSet, i))
+            for(auto it = primeImplicants.begin(); it != primeImplicants.end(); it++)
             {
-                primeImplicants.erase(it);
-                changed = true;
+                if(includes(it2->decimals.begin(), it2->decimals.end(), it->decimals.begin(), it->decimals.end()) && (it2 != it))
+                {
+                    rm.push_back(*it);
+                    changed = true;
+                }
             }
-            it++;
         }
 
-        auto it2 = onSet.begin();
-        for(int i = 0; i < onSet.size(); i++)
+        vector<minterms>::iterator it = primeImplicants.begin();
+        for(int i = 0; i < rm.size(); i++)
         {
-            if(isDominatingColumn(primeImplicants, onSet, i))
+            while(it != primeImplicants.end())
             {
-                onSet.erase(it2);
-                changed = true;
+                if(it->binRep == rm[i].binRep)
+                {
+                    it = primeImplicants.erase(it);
+                } else
+                {
+                    ++it;
+                }
             }
-            it2++;
         }
 
         if(changed)
         {
-            findMinExpression(primeImplicants, onSet, true, output, firstEnter);
-        }
-        else
-        {
-            findMinExpression(primeImplicants,onSet, false, output, firstEnter);
+            //cout << "x";
+            findMinExpression(primeImplicants, onSet, changed, output, firstEnter);
         }
 
+        map<int, set<string>> c;
+        c.clear();
+
+        for(auto it2 = primeImplicants.begin(); it2 != primeImplicants.end(); it2++)
+        {
+            for(auto it = it2->decimals.begin(); it != it2->decimals.end(); it++)
+            {   
+                if (c.find(*it) == c.end()) {
+
+                    set<string>* temp = new set<string>;
+                    temp->insert(it2->binRep);
+                    c.insert(pair<int, set<string>>(*it, *temp));
+                } else {
+                    c[*it].insert(it2->binRep);
+                }              
+
+            }
+        }
+
+        for (auto x = c.begin(); x != c.end(); x++)
+        {
+            for (auto y = c.begin(); y != c.end(); y++)
+            {
+                if(includes(x->second.begin(), x->second.end(), y->second.begin(), y->second.end()) && (x->first != y->first))
+                {
+                    changed = true;
+                    for(auto i = onSet.begin(); i < onSet.end(); i++)
+                    {
+                        if(*i == x->first)
+                            onSet.erase(i);
+                    }
+                }
+            }
+        }  
+
+        //or all of them if all are needed
+
+        // for(auto it = c.begin(); it != c.end(); it++)
+        // {
+        //     delete &(it->second);
+        // }
+
+        if(onSet.size() == 1 || primeImplicants.size() == 0)
+        {
+            output.push_back(primeImplicants[0]);
+            return output;
+        }
+// for(auto i = primeImplicants.begin(); i != primeImplicants.end(); i++)
+//     {
+//         for(auto it = i->decimals.begin(); it != i->decimals.end(); it++)
+//         {
+//             cout << *it << " ";
+//         }
+//         cout << endl;
+//     }
+
+
+        //if 1 then return append it to output and return
+        findMinExpression(primeImplicants, onSet, changed, output, firstEnter);
+    
     }
 
 }
@@ -287,12 +394,27 @@ int main()
     onset.push_back(10);
     onset.push_back(13);
 
+    for(auto it = primeImplicants.begin(); it != primeImplicants.end(); it++)
+    {
+        for(auto it2 = it->decimals.begin(); it2 != it->decimals.end(); it2++)
+        {
+            if(find(onset.begin(), onset.end(), *it2) == onset.end())
+            {
+                set<int>::iterator it3 = find(it->decimals.begin(), it->decimals.end(), *it2);
+                it->decimals.erase(it3);
+            }
+        }
+    }
+
+
     vector<minterms> epi;
     vector<minterms> out;
-    epi = findMinExpression(primeImplicants, onset, true, out, true);
+    bool c = true;
+    findMinExpression(primeImplicants, onset, c, out, true);
 
-    for(auto it = epi.begin(); it != epi.end(); it++)
+    for(auto it = out.begin(); it != out.end(); it++)
     {
+        cout << it->binRep;
         booleanRep(*it);
     }
 
